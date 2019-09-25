@@ -6,28 +6,32 @@
 
 
 - get_balance.py
-    Get account balance: Purchased, Balance, Consumed
 
-    This scripts needs config.ini : Username/Password/Tenant
+        Get account balance: Purchased, Balance, Consumed
+
+        This scripts needs config.ini : Username/Password/Tenant
 
 - get_monthly.py
-    Get Oracle cloud monthly charge for given date range
 
-    This scripts needs config.ini : Username/Password/Tenant
+        Get Oracle cloud monthly charge for given date range
+
+        This scripts needs config.ini : Username/Password/Tenant
 
 - get_usage.py
-    Get Oracle cloud detailed usage costs for given date range
 
-    This scripts needs config.ini : Username/Password/Tenant
+        Get Oracle cloud detailed usage costs for given date range
+
+        This scripts needs config.ini : Username/Password/Tenant
 
 - get_CompCost.py
-    Get Oracle cloud usage costs per compartments for given date range
 
-    This scripts needs :
+        Get Oracle cloud usage costs per compartments for given date range
 
-        config.ini : Username/Password/Tenant
-        
-        compartments.ini : Compartments list
+        This scripts needs :
+
+            config.ini : Username/Password/Tenant
+
+            compartments.ini : Compartments list
 
 
 Pre Requisites:
