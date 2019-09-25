@@ -1,4 +1,4 @@
-# Get your billing details from MyServices
+# Get your OCI billing details
 
     Oracle Cloud Account Metering REST APIs expose a lot of useful information about our Oracle Cloud account via REST APIs. 
     We can, for example, check our subscription details, credit promotions, resource usage, cost and quotas. 
