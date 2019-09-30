@@ -3,7 +3,7 @@ Oracle Cloud Infrastructure Resources
 
 Learning Material for Oracle Technologies
 
-  https://github.com/oracle/learning-library
+  - https://github.com/oracle/learning-library
   
 OCI Learning practices
 
