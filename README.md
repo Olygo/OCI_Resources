@@ -27,7 +27,7 @@ OCI CLI
 
 OCI Python
 
-   https://github.com/oracle/oci-python-sdk
+    https://github.com/oracle/oci-python-sdk
 
 OCI Cloud Native
 
