@@ -7,7 +7,7 @@
 
 # PRE REQUISITES
 #
-#    - Copy the BM_Server Private_Key locally on the BM_Control Server
+#    - Copy the Target_Server Private_Key locally on the Control Server
 #    - Here the Private Key File is named "key"
 #    - Don't forget to apply proper rights :
 #      chmod 700 key
@@ -16,10 +16,10 @@
 #####################
 # Configuration data
 ####################
-bm_ip="${1}"
-#bm_ip="10.0.0.2"
-bm_user="opc"
-bm_key_path="$HOME/key"
+target_ip="${1}"
+#target_ip="10.0.0.2"
+target_user="opc"
+target_key_path="$HOME/key"
 dir_conf="$HOME/config"
 
 
@@ -45,18 +45,18 @@ echo
 # Check for dir, if not found create it using mkdir
 [ ! -d "${dir_conf}" ] && mkdir -p "${dir_conf}"
 
-# Retrieve BM's Metadata
-echo -e "\033[32mRetrieving ${bm_ip} Metadata\033[0m"
+# Retrieve target's Metadata
+echo -e "\033[32mRetrieving ${target_ip} Metadata\033[0m"
 echo ""
-echo -e "\033[32mConnecting SSH: ${bm_ip}...\033[0m"
+echo -e "\033[32mConnecting SSH: ${target_ip}...\033[0m"
 echo ""
-ssh -i ${bm_key_path} ${bm_user}@${bm_ip} 'curl -L http://169.254.169.254/opc/v1/instance/' > ${dir_conf}/metadata.cfg
+ssh -i ${target_key_path} ${target_user}@${target_ip} 'curl -L http://169.254.169.254/opc/v1/instance/' > ${dir_conf}/metadata.cfg
 cd ${dir_conf}
-echo -e "\031[32mExiting SSH: ${bm_ip}...\033[0m"
+echo -e "\031[32mExiting SSH: ${target_ip}...\033[0m"
 echo ""
 
 # Export metadata to variables
-echo -e "\033[32mExtracting ${bm_ip} Metadata...\033[0m"
+echo -e "\033[32mExtracting ${target_ip} Metadata...\033[0m"
 availabilityDomain=$(cat metadata.cfg  | grep availabilityDomain | sed 's/"availabilityDomain" : "//;s/",//')
 echo -e "\033[32mAvailability Domain: \033[36m${availabilityDomain}\033[0m"
 faultDomain=$(cat metadata.cfg | grep faultDomain | sed 's/"faultDomain" : "//;s/",//')
