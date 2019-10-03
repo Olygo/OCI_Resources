@@ -7,7 +7,7 @@ OCI Object Storage is compatible with S3 Storage management tools such as CyberD
 
 ### Download the CyberDuck OCI mark upped Profiles
 
-<https://github.com/Olygo/OCI_Object_Storage/CyberDuck_Profiles.zip>
+<https://github.com/Olygo/OCI_Resources/raw/master/OCI_Object_Storage/CyberDuck_Profiles.zip>
 
 ### Open your OCI Console:
 
