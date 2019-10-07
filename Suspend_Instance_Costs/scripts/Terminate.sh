@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-# Version: 1.0.0
+# Version: 1.0.1
 # Usage:
 # Terminate.sh <privateIP>
 #
@@ -102,6 +102,8 @@ echo -e "\033[32mRetrieving ${displayName} Block Volume...\033[0m"
 oci compute volume-attachment list --availability-domain ${availabilityDomain} --compartment-id ${compartmentId} --instance-id ${instanceId} > blockVolumeMetadata.cfg
 blockVolumeId=$(cat blockVolumeMetadata.cfg | grep volume-id | sed 's/"volume-id": "//;s/"//')
 echo ${blockVolumeId} > blockVolumeId.cfg
+	# replace spaces with carriage return
+	tr ' ' '\n' < blockVolumeId.cfg > blockVolumeIds.cfg
 echo -e "\033[36m${blockVolumeId}\033[0m"
 echo ""
 
@@ -147,10 +149,20 @@ echo "Waiting until the resource has entered state: AVAILABLE..."
 echo ""
 oci bv boot-volume-backup create --boot-volume-id ${bootVolumeId} --type full --display-name ${displayName}_boot_$timeNow --wait-for-state AVAILABLE > /dev/null
 
-echo -e "\033[32mBacking up Block Volume...\033[0m"
-echo "Waiting until the resource has entered state: AVAILABLE..."
-echo ""
-oci bv backup create --volume-id ${blockVolumeId} --type full --display-name ${displayName}_block_$timeNow --wait-for-state AVAILABLE > /dev/null
+	# Read blockVolumeId.cfg line per line and extract multiple blockvolumesID if any
+	counter=1
+	while IFS= read -r line
+		do
+
+ 	 	   echo "BlockVolume #" "$counter" " $line"
+		   echo -e "\033[32mBacking up Block Volume #\033[0m" "$counter"
+		   echo "Waiting until the resource has entered state: AVAILABLE..."
+		   echo ""
+		   blockVolumeId=${line}
+ 	           oci bv backup create --volume-id ${blockVolumeId} --type full --display-name ${displayName}_block_$timeNow --wait-for-state AVAILABLE > /dev/null
+	 	   ((counter+=1))
+
+	done < blockVolumeIds.cfg
 
 echo -e "\033[31mTerminating instance...\033[0m"
 echo "Waiting until the resource has entered state: TERMINATED..."

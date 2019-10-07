@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-# version: 1.0.0
+# version: 1.0.1
 
 # PRE REQUISITES
 # 
@@ -39,7 +39,7 @@ availabilityDomain=$(cat availabilityDomain.cfg)
 echo -e "\033[32m availabilityDomain: \033[36m $availabilityDomain\033[0m"
 bootVolumeId=$(cat bootVolumeId.cfg)
 echo -e "\033[32m bootVolumeId: \033[36m $bootVolumeId\033[0m"
-blockVolumeId=$(cat blockVolumeId.cfg)
+blockVolumeId=$(cat blockVolumeIds.cfg)
 echo -e "\033[32m blockVolumeId: \033[36m $blockVolumeId\033[0m"
 subnetId=$(cat subnetId.cfg)
 echo -e "\033[32m subnetId: \033[36m $subnetId\033[0m"
@@ -80,8 +80,19 @@ privateIpId=$(cat privateIpId_new.cfg | grep ocid1.privateip. | sed 's/"id": "//
 echo ${privateIpId} > privateIpId_new.cfg
 echo -e "\033[36m${privateIpId}\033[0m"
 
-echo -e "\033[32mAttaching block volume...\033[0m"
-oci compute volume-attachment attach-iscsi-volume --instance-id ${instanceId} --volume-id ${blockVolumeId} --wait-for-state ATTACHED > /dev/null
+  # Read blockVolumeIds.cfg line per line and extract multiple blockvolumesID if any
+        counter=1
+        while IFS= read -r line
+                do
+
+                   echo "BlockVolume #" "$counter" " $line"
+                   echo -e "\033[32mAttaching Block Volume #\033[0m" "$counter"
+		   echo ""
+		   blockVolumeId=${line}
+		   oci compute volume-attachment attach-iscsi-volume --instance-id ${instanceId} --volume-id ${blockVolumeId} --wait-for-state ATTACHED > /dev/null
+                   ((counter+=1))
+
+        done < blockVolumeIds.cfg
 
 echo -e "\033[32mAssigning public ip...\033[0m"
 oci network public-ip update --force --public-ip-id ${publicIpId} --private-ip-id ${privateIpId} --wait-for-state ASSIGNED  > /dev/null
