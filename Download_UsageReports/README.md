@@ -1,4 +1,12 @@
-# OCI get_report
+# OCI get_report.py
+ Use get_report.py to download and extract OCI report locally.
+
+# Prerequisites 
+
+before using this script, you must set up OCI-CLI
+https://docs.cloud.oracle.com/iaas/Content/API/SDKDocs/cliinstall.htm
+ 
+# OCI get_report.sh
 
  get_report.sh will authenticate to your API Endpoint and will download all reports locally.
 
