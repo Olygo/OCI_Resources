@@ -3,6 +3,9 @@
 
 # Prerequisites 
 
+Install the OCI Python SDK
+https://oracle-cloud-infrastructure-python-sdk.readthedocs.io/en/latest/installation.html
+
 before using this script, you must set up OCI-CLI
 https://docs.cloud.oracle.com/iaas/Content/API/SDKDocs/cliinstall.htm
  
