@@ -104,7 +104,7 @@ class ShowOCIFlags(object):
 # class ShowOCIService
 ##########################################################################
 class ShowOCIService(object):
-    oci_compatible_version = "2.3.1"
+    oci_compatible_version = "2.6.4"
 
     ##########################################################################
     # Global Constants
@@ -277,6 +277,7 @@ class ShowOCIService(object):
         {'shape': 'VM.DenseIO2.24', 'cpu': 24, 'memory': 320, 'storage': 25.6},
         {'shape': 'VM.DenseIO2.8', 'cpu': 8, 'memory': 120, 'storage': 6.4},
         {'shape': 'VM.GPU2.1', 'cpu': 12, 'memory': 104, 'storage': 0},
+        {'shape': 'VM.Standard.E2.1.Micro', 'cpu': 1, 'memory': 1, 'storage': 0},
         {'shape': 'VM.Standard.E2.1', 'cpu': 1, 'memory': 8, 'storage': 0},
         {'shape': 'VM.Standard.E2.2', 'cpu': 2, 'memory': 16, 'storage': 0},
         {'shape': 'VM.Standard.E2.4', 'cpu': 4, 'memory': 32, 'storage': 0},
@@ -614,7 +615,7 @@ class ShowOCIService(object):
     ##########################################################################
     def __load_print_cnt(self, cnt, start_time):
         et = time.time() - start_time
-        print(" ("'{:02d}:{:02d}:{:02d}'.format(round(et // 3600), (round(et % 3600 // 60)), round(et % 60)) + ")")
+        print(" (" + str(cnt) + ") - "'{:02d}:{:02d}:{:02d}'.format(round(et // 3600), (round(et % 3600 // 60)), round(et % 60)))
 
     ##########################################################################
     # print auth warning
@@ -1535,10 +1536,17 @@ class ShowOCIService(object):
                         cidr = "" if lpg.peer_advertised_cidr is None else " - " + str(lpg.peer_advertised_cidr)
 
                         # add lpg info to data
-                        val = {'id': str(lpg.id), 'vcn_id': str(lpg.vcn_id),
+                        val = {'id': str(lpg.id),
+                               'vcn_id': str(lpg.vcn_id),
                                'name': str(lpg.peering_status).ljust(8) + " - " + str(lpg.display_name) + str(cidr),
-                               'time_created': str(lpg.time_created), 'route_table_id': str(lpg.route_table_id),
-                               'compartment_name': str(compartment['name']), 'compartment_id': str(compartment['id']),
+                               'time_created': str(lpg.time_created),
+                               'display_name': str(lpg.display_name),
+                               'peer_advertised_cidr': str(lpg.peer_advertised_cidr),
+                               'is_cross_tenancy_peering': str(lpg.is_cross_tenancy_peering),
+                               'peer_advertised_cidr_details': lpg.peer_advertised_cidr_details,
+                               'route_table_id': str(lpg.route_table_id),
+                               'compartment_name': str(compartment['name']),
+                               'compartment_id': str(compartment['id']),
                                'defined_tags': [] if lpg.defined_tags is None else lpg.defined_tags,
                                'freeform_tags': [] if lpg.freeform_tags is None else lpg.freeform_tags,
                                'region_name': str(self.config['region'])}
@@ -2501,8 +2509,11 @@ class ShowOCIService(object):
                 # arr = oci.core.models.Drg
                 for arr in arrs:
                     if arr.lifecycle_state == oci.core.models.Drg.LIFECYCLE_STATE_AVAILABLE:
-                        val = {'id': str(arr.id), 'name': str(arr.display_name), 'time_created': str(arr.time_created),
-                               'compartment_name': str(compartment['name']), 'compartment_id': str(compartment['id']),
+                        val = {'id': str(arr.id),
+                               'name': str(arr.display_name),
+                               'time_created': str(arr.time_created),
+                               'compartment_name': str(compartment['name']),
+                               'compartment_id': str(compartment['id']),
                                'defined_tags': [] if arr.defined_tags is None else arr.defined_tags,
                                'freeform_tags': [] if arr.freeform_tags is None else arr.freeform_tags,
                                'region_name': str(self.config['region'])}
@@ -2556,11 +2567,17 @@ class ShowOCIService(object):
                 # loop on array
                 # arr = oci.core.models.Cpe
                 for arr in arrs:
-                    val = {'id': str(arr.id), 'name': str(arr.display_name) + " - " + str(arr.ip_address),
-                           'time_created': str(arr.time_created), 'compartment_name': str(compartment['name']),
+                    val = {'id': str(arr.id),
+                           'name': str(arr.display_name) + " - " + str(arr.ip_address),
+                           'display_name': str(arr.display_name),
+                           'ip_address': str(arr.ip_address),
+                           'time_created': str(arr.time_created),
+                           'compartment_name': str(compartment['name']),
                            'defined_tags': [] if arr.defined_tags is None else arr.defined_tags,
                            'freeform_tags': [] if arr.freeform_tags is None else arr.freeform_tags,
-                           'compartment_id': str(compartment['id']), 'region_name': str(self.config['region'])}
+                           'compartment_id': str(compartment['id']),
+                           'region_name': str(self.config['region'])
+                           }
                     data.append(val)
                     cnt += 1
 
@@ -3695,8 +3712,12 @@ class ShowOCIService(object):
                     for arr in boot_volumes:
 
                         val = {'id': str(arr.id), 'display_name': str(arr.display_name),
-                               'size_in_gbs': str(arr.size_in_gbs), 'time_created': str(arr.time_created),
-                               'kms_key_id': str(arr.kms_key_id), 'volume_group_id': str(arr.volume_group_id),
+                               'size_in_gbs': str(arr.size_in_gbs),
+                               'time_created': str(arr.time_created),
+                               'kms_key_id': str(arr.kms_key_id),
+                               'vpus_per_gb': str(arr.vpus_per_gb),
+                               'is_hydrated': str(arr.is_hydrated),
+                               'volume_group_id': str(arr.volume_group_id),
                                'volume_group_name': "", 'availability_domain': str(arr.availability_domain),
                                'compartment_name': str(compartment['name']), 'compartment_id': str(compartment['id']),
                                'defined_tags': [] if arr.defined_tags is None else arr.defined_tags,
@@ -3766,10 +3787,15 @@ class ShowOCIService(object):
                 for arr in arrs:
 
                     val = {'id': str(arr.id), 'display_name': str(arr.display_name),
-                           'size_in_gbs': str(arr.size_in_gbs), 'time_created': str(arr.time_created),
-                           'kms_key_id': str(arr.kms_key_id), 'volume_group_id': str(arr.volume_group_id),
+                           'size_in_gbs': str(arr.size_in_gbs),
+                           'time_created': str(arr.time_created),
+                           'kms_key_id': str(arr.kms_key_id),
+                           'volume_group_id': str(arr.volume_group_id),
                            'volume_group_name': "", 'availability_domain': str(arr.availability_domain),
-                           'compartment_name': str(compartment['name']), 'compartment_id': str(compartment['id']),
+                           'compartment_name': str(compartment['name']),
+                           'compartment_id': str(compartment['id']),
+                           'vpus_per_gb': str(arr.vpus_per_gb),
+                           'is_hydrated': str(arr.is_hydrated),
                            'defined_tags': [] if arr.defined_tags is None else arr.defined_tags,
                            'freeform_tags': [] if arr.freeform_tags is None else arr.freeform_tags,
                            'region_name': str(self.config['region']),
@@ -4450,7 +4476,7 @@ class ShowOCIService(object):
                            'compartment_name': str(compartment['name']), 'compartment_id': str(compartment['id']),
                            'region_name': str(self.config['region']), 'public_access_type': "", 'storage_tier': "",
                            'approximate_count': "", 'approximate_size': "", 'object_lifecycle': "",
-                           'preauthenticated_requests': "", 'size_gb': ""}
+                           'preauthenticated_requests': "", 'size_gb': "", 'namespace_name': namespace_name}
 
                     ###############################
                     # get more info
@@ -5172,6 +5198,9 @@ class ShowOCIService(object):
                              'compartment_name': str(compartment['name']),
                              'compartment_id': str(compartment['id']),
                              'time_created': str(dbs.time_created),
+                             'storage_management': "",
+                             'sparse_diskgroup': str(dbs.sparse_diskgroup),
+                             'reco_storage_size_in_gb': str(dbs.reco_storage_size_in_gb),
                              'region_name': str(self.config['region']),
                              'defined_tags': [] if dbs.defined_tags is None else dbs.defined_tags,
                              'freeform_tags': [] if dbs.freeform_tags is None else dbs.freeform_tags,
@@ -5186,6 +5215,11 @@ class ShowOCIService(object):
                             value['shape_ocpu'] = shape_sizes['cpu']
                             value['shape_memory_gb'] = shape_sizes['memory']
                             value['shape_storage_tb'] = shape_sizes['storage']
+
+                    # storage_management
+                    if dbs.db_system_options:
+                        if dbs.db_system_options.storage_management:
+                            value['storage_management'] = dbs.db_system_options.storage_management
 
                     # license model
                     if dbs.license_model == oci.database.models.DbSystem.LICENSE_MODEL_LICENSE_INCLUDED:

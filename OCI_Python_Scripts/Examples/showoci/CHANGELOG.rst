@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on `Keep a Changelog <http://keepachangelog.com/>`_.
 
 ====================
+19.11.19 - 2019-11-19
+====================
+* Added total block volume in CSV export per instance
+* Added compartment_id to all JSON resources
+* Changed JSON 'compartment' to 'compartment_name' to be aligned across the application
+* Added VPUs to the block and boot volumes
+
+====================
+19.10.31 - 2019-10-31
+====================
+* Added Storage Management for dbsystem
+* Change output - gb to GB and tb to TB
+* Added compartment_id, compartment_name, region_name to several areas for json
+* Added more functionality to showoci_to_se.py to align with showoci JSON
+
+====================
+19.9.30 - 2019-09-30
+====================
+* Fix few bugs and added free compute shape
+
+====================
 19.9.11 - 2019-09-11
 ====================
 * Fix instance configuration error when block volumes or vnic exist

@@ -22,7 +22,7 @@ use_instance_principal = 'FALSE'
 top_level_compartment_id = ''
 
 # List compartment names to exclude
-excluded_compartments = ['System', 'Sys_Admin']
+excluded_compartments = ['ManagedCompartmentForPaaS']
 
 # if no compartment to exclude, use :
 # excluded_compartments = []
