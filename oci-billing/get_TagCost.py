@@ -17,7 +17,7 @@ import os
 ##########################
 
 configfile = './config.ini'
-compartmentfile = './tags.ini'
+tagfile = './tags.ini'
 mycurrency = '£'
 
 ##########################
@@ -97,11 +97,11 @@ if __name__ == "__main__":
 		# In case we use the tilde (~) home directory character
 		configfile = os.path.expanduser(configfile)
 
-		if not os.path.isfile(compartmentfile):
-			print('Error: Compartments file not found ({})'.format(compartmentfile), file=sys.stderr)
+		if not os.path.isfile(tagfile):
+			print('Error: Compartments file not found ({})'.format(tagfile), file=sys.stderr)
 			sys.exit(0)
 
-		with open(compartmentfile) as file:
+		with open(tagfile) as file:
 			for tagkey in file:
 				tagkey = tagkey.strip()    # remove the line Feed <<< \n >>> character at the end of each line 
 
