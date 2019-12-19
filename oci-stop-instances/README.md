@@ -1,10 +1,5 @@
 # OCI-STOP
 
-
-Based on Masataka Marukawa original code
-	
-		https://github.com/mmarukaw
-
 - Stop Compute/Autonomous/DBsys Instances.
 - Connect to every profile in Oci Config file
 - To every region or not
@@ -17,3 +12,9 @@ Based on Masataka Marukawa original code
 			- Tag Value : FALSE
 				- Instances running with Value=FALSE will not be stopped
 				- Instances running without Tags will be stopped
+
+
+Inspired by Masataka Marukawa code
+
+	
+		https://github.com/mmarukaw

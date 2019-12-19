@@ -1,4 +1,7 @@
-from https://github.com/AnykeyNL
+From Richard Garsthagen code
+	
+        https://github.com/AnykeyNL
+
 
 # OCI-SuperDelete
 Delete all OCI resources in a compartment

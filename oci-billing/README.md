@@ -1,9 +1,5 @@
 # Get your OCI billing details
 
-Based on Martin Bridge original code
-	
-		https://github.com/bridgem
-
 Oracle Cloud Account Metering REST APIs expose a lot of useful information about our Oracle Cloud account via REST APIs. 
     We can, for example, check our subscription details, credit promotions, resource usage, cost and quotas. 
     All we need to test the REST APIs is cURL, a command-line utility for sending HTTP requests. 
@@ -66,3 +62,8 @@ https://myservices-YOUR-TENANT-NAME.console.oraclecloud.com/mycloud/cloudportal/
 
 # Find your IDs :
 ![](./images/IDs.png)
+
+
+Inspired by Martin Bridge code
+	
+		https://github.com/bridgem
