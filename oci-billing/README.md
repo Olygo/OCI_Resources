@@ -12,25 +12,25 @@ Oracle Cloud Account Metering REST APIs expose a lot of useful information about
 
         Get account balance: Purchased, Balance, Consumed
 
-        This scripts needs config.ini : Username/Password/Tenant
+        This script needs config.ini : Username/Password/Tenant
 
 - get_monthly.py
 
         Get Oracle cloud monthly charge for given date range
 
-        This scripts needs config.ini : Username/Password/Tenant
+        This script needs config.ini : Username/Password/Tenant
 
 - get_usage.py
 
         Get Oracle cloud detailed usage costs for given date range
 
-        This scripts needs config.ini : Username/Password/Tenant
+        This script needs config.ini : Username/Password/Tenant
 
 - get_CompCost.py
 
         Get Oracle cloud usage costs per compartments for given date range
 
-        This scripts needs :
+        This script needs :
 
             config.ini : Username/Password/Tenant
 
@@ -40,7 +40,7 @@ Oracle Cloud Account Metering REST APIs expose a lot of useful information about
 
         Get Oracle cloud usage costs per tag for given date range
 
-        This scripts needs :
+        This script needs :
 
             config.ini : Username/Password/Tenant
 
