@@ -36,6 +36,15 @@ Oracle Cloud Account Metering REST APIs expose a lot of useful information about
 
             compartments.ini : Compartments list
 
+- get_TagCost.py
+
+        Get Oracle cloud usage costs per tag for given date range
+
+        This scripts needs :
+
+            config.ini : Username/Password/Tenant
+
+            tags.ini : tags list
 
 Pre Requisites:
 
