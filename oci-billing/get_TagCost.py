@@ -1,4 +1,4 @@
-# get_CompCost.py
+# get_TagCost.py
 # 
 # Get Oracle cloud usage costs per compartments for given date range
 # Parameters (picked up from config file)
@@ -17,7 +17,7 @@ import os
 ##########################
 
 configfile = './config.ini'
-compartmentfile = './compartments.ini'
+compartmentfile = './tags.ini'
 mycurrency = '£'
 
 ##########################
@@ -125,18 +125,20 @@ if __name__ == "__main__":
 				config.read(configfile)
 
 				for tenant in config.sections():
+						ini_data = config[tenant]
 
-					ini_data = config[tenant]
+						# Show usage details
+						# Set time component of end date to 23:59:59 to match the behaviour of the Oracle my-services dashboard
+						usage = get_account_charges(
+						ini_data['username'], ini_data['password'],
+						ini_data['domain'], ini_data['idcs_guid'],
+						datetime.strptime(start_date, '%d-%m-%Y'),
+						datetime.strptime(end_date, '%d-%m-%Y') + timedelta(days=1, seconds=-0.001))
+	
+						# Output cost per compartmennt
+						print()
+						print('{} {} {:6.2f} {}'.format(tagkey.replace('ORCL:OCICompartmentName=', ''), ': ', usage, mycurrency))
+						print()
 
-					# Show usage details
-					# Set time component of end date to 23:59:59 to match the behaviour of the Oracle my-services dashboard
-					usage = get_account_charges(
-					ini_data['username'], ini_data['password'],
-					ini_data['domain'], ini_data['idcs_guid'],
-					datetime.strptime(start_date, '%d-%m-%Y'),
-					datetime.strptime(end_date, '%d-%m-%Y') + timedelta(days=1, seconds=-0.001))
-
-					# Output cost per compartment
-					print()
-					print('{} {} {:6.2f} {}'.format(tagkey, ': ', usage, mycurrency))
-					print()
+	
+				 	
