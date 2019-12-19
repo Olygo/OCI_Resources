@@ -1,7 +1,7 @@
 # OCI-STOP
 
 
-Based on the original code of Masataka Marukawa
+Based on Masataka Marukawa original code
 	
 		https://github.com/mmarukaw
 

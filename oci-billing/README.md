@@ -1,6 +1,6 @@
 # Get your OCI billing details
 
-Based on the original code of Martin Bridge
+Based on Martin Bridge original code
 	
 		https://github.com/bridgem
 
