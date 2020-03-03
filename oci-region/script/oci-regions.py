@@ -19,11 +19,13 @@ yellow = lambda text: '\033[0;33m' + text + '\033[0m'
 
 ###########  -Begin Config- ###########
 
-# specify your config file profile name and path - Not needed if use_instance_principal = 'TRUE'
+# specify your config file profile name and path
+# Both are not needed if use_instance_principal = 'TRUE'
 profile = "DEFAULT"
 configfile = "/home/opc/.oci/config"
 
 # set 'TRUE' to use instance principal authentication instead of config file
+# specify your tenant OCID
 use_instance_principal = 'FALSE'
 tenancy_id_instance_principal = "ocid1.tenancy.oc1..aaaaaa..."
 
@@ -48,12 +50,16 @@ with open(errors_log, mode='w') as err:
 	err.close()
 
 ### setup authentication method ###
+
+configfile = os.path.expanduser(configfile) # In case tilde (~) character is use in path
+
 if use_instance_principal == 'TRUE':
     signer = oci.auth.signers.InstancePrincipalsSecurityTokenSigner()
     config = {}
     tenancy_id = tenancy_id_instance_principal
     
 else:
+
     config = oci.config.from_file(configfile, profile)
     tenancy_id = config['tenancy']
     
