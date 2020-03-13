@@ -33,6 +33,3 @@ def get_audit_events(Auth, audit, Events):
                     print("{} => {} => {} @ {}".format(Who,How,What,When))
 
     print()
-
-    #return list_of_audit_events
-
