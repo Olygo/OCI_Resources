@@ -1,6 +1,17 @@
-# oci-region
+# oci-controls
 
-This script will enable all available region in OCI.
+This script will check if objects have proper tags applied
+It will also check if Databases (Dbsys) & Autonomous databases use Licence Included or BYOL.
+It can report only (cleanup = "FALSE") or delete resources (cleanup = "TRUE") if tags are missing.
+
+for Database if cleanup = "TRUE" => Databases or deteled.
+for Autonomous => Licences are updates.
+
+Adapt this script according to your needs (ie: using Licence Included vs BYOL)
+You can also simple disable calling specific functions such as get_no_byol_databases_licences or get_no_byol_autonomous_licences
+(disabled by default)
+
+
 
 - Config file Authentication
 
@@ -32,6 +43,3 @@ This script will enable all available region in OCI.
         region=eu-frankfurt-1
 
 		ref: https://docs.cloud.oracle.com/en-us/iaas/Content/API/SDKDocs/cliinstall.htm
-
-
-	![screenshot](./.images/screenshot.png)

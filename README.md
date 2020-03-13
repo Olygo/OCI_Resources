@@ -1,6 +1,11 @@
 # OCI_Resources
 Oracle Cloud Infrastructure Resources
 
+Great Github repos :
+    https://github.com/AnykeyNL
+    https://github.com/bridgem
+    https://github.com/mmarukaw
+
 Learning Material for Oracle Technologies
 
     https://github.com/oracle/learning-library

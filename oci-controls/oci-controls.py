@@ -31,7 +31,7 @@ white = lambda text: '\033[0;37m' + text + '\033[0m'
 # specify your config file profile name and path
 # Both are not needed if use_instance_principal = 'TRUE'
 profile = "DEFAULT"
-configfile = '/home/opc/CloudAccounts/config/configSPEC'
+configfile = '/home/opc/.oci/config'
 
 # set 'TRUE' to use instance principal authentication instead of config file
 # specify your tenant OCID
@@ -58,7 +58,7 @@ target_region_names = ['eu-frankfurt-1']
 # otherwise Resources will be logged only if tag is missing
 cleanup = "NO"
 
-TagNamespaces = ['System_Tags', 'Mandatory_Tags']
+TagNamespaces = ['Mandatory_Tags']
 TagKeys = ['Owner'] 
 
 ###########  -End Config- ###########
@@ -160,21 +160,21 @@ for region in target_regions:
 	region = region.region_name
 
 	# call functions	
-	# get_instance_pools(config, signer, use_instance_principal, tenant_name, region, compartments, tags_report, cleanup, now, errors_log)
-	# get_instance_configurations(config, signer, use_instance_principal, tenant_name, region, compartments, tags_report, cleanup, now, errors_log)
-	# get_dedicated_vm_hosts(config, signer, use_instance_principal, tenant_name, region, compartments, tags_report, cleanup, now, errors_log)
-	# get_compute_instances(config, signer, use_instance_principal, tenant_name, region, compartments, tags_report, cleanup, now, errors_log)
+	get_instance_pools(config, signer, use_instance_principal, tenant_name, region, compartments, tags_report, cleanup, now, errors_log)
+	get_instance_configurations(config, signer, use_instance_principal, tenant_name, region, compartments, tags_report, cleanup, now, errors_log)
+	get_dedicated_vm_hosts(config, signer, use_instance_principal, tenant_name, region, compartments, tags_report, cleanup, now, errors_log)
+	get_compute_instances(config, signer, use_instance_principal, tenant_name, region, compartments, tags_report, cleanup, now, errors_log)
 
-	# get_buckets(config, signer, use_instance_principal, tenant_name, region, compartments, tags_report, cleanup, now, errors_log)
-	# get_boot_volumes(config, signer, use_instance_principal, tenant_name, region, compartments, tags_report, cleanup, now, errors_log)
-	# get_boot_volume_backups(config, signer, use_instance_principal, tenant_name, region, compartments, tags_report, cleanup, now, errors_log)
-	# get_block_volumes(config, signer, use_instance_principal, tenant_name, region, compartments, tags_report, cleanup, now, errors_log)
-	# get_block_volume_backups(config, signer, use_instance_principal, tenant_name, region, compartments, tags_report, cleanup, now, errors_log)
-	# get_custom_images(config, signer, use_instance_principal, tenant_name, region, compartments, tags_report, cleanup, now, errors_log)
-	# get_volume_group_backups(config, signer, use_instance_principal, tenant_name, region, compartments, tags_report, cleanup, now, errors_log)
-	# get_volume_groups(config, signer, use_instance_principal, tenant_name, region, compartments, tags_report, cleanup, now, errors_log)
+	get_buckets(config, signer, use_instance_principal, tenant_name, region, compartments, tags_report, cleanup, now, errors_log)
+	get_boot_volumes(config, signer, use_instance_principal, tenant_name, region, compartments, tags_report, cleanup, now, errors_log)
+	get_boot_volume_backups(config, signer, use_instance_principal, tenant_name, region, compartments, tags_report, cleanup, now, errors_log)
+	get_block_volumes(config, signer, use_instance_principal, tenant_name, region, compartments, tags_report, cleanup, now, errors_log)
+	get_block_volume_backups(config, signer, use_instance_principal, tenant_name, region, compartments, tags_report, cleanup, now, errors_log)
+	get_custom_images(config, signer, use_instance_principal, tenant_name, region, compartments, tags_report, cleanup, now, errors_log)
+	get_volume_group_backups(config, signer, use_instance_principal, tenant_name, region, compartments, tags_report, cleanup, now, errors_log)
+	get_volume_groups(config, signer, use_instance_principal, tenant_name, region, compartments, tags_report, cleanup, now, errors_log)
 
-	# get_database_instances(config, signer, use_instance_principal, tenant_name, region, compartments, tags_report, cleanup, now, errors_log)
+	get_database_instances(config, signer, use_instance_principal, tenant_name, region, compartments, tags_report, cleanup, now, errors_log)
 	get_autonomous_instances(config, signer, use_instance_principal, tenant_name, region, compartments, tags_report, cleanup, now, errors_log, TagNamespaces, TagKeys)
 	# get_no_byol_databases_licences(config, signer, use_instance_principal, tenant_name, region, compartments, licenses_report, cleanup, now, errors_log)
 	# get_no_byol_autonomous_licences(config, signer, use_instance_principal, tenant_name, region, compartments, licenses_report, cleanup, now, errors_log)

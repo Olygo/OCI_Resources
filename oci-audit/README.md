@@ -1,6 +1,19 @@
-# oci-region
+# oci-audit
 
-This script will subscribe to all available region in OCI.
+This script retrieves action logs about Compute/Database/Autonomous instances 
+from the audit logs & for a specific compartment.
+
+- Action Logs collected :
+
+        - Create Autonomous Database
+        - Delete Autonomous Database
+        - Start Autonomous Database 
+        - Stop Autonomous Database
+        - Launch DbSystem
+        - Terminate DbSystem
+        - Launch Compute Instance
+        - Start/Stop Compute Instance
+        - Terminate Compute Instance
 
 - Config file Authentication
 
@@ -34,4 +47,4 @@ This script will subscribe to all available region in OCI.
 		ref: https://docs.cloud.oracle.com/en-us/iaas/Content/API/SDKDocs/cliinstall.htm
 
 
-	![screenshot](./.images/screenshot.png)
+![screenshot](./images/audit.png)

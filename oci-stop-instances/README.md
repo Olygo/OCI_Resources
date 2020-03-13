@@ -12,9 +12,3 @@
 			- Tag Value : FALSE
 				- Instances running with Value=FALSE will not be stopped
 				- Instances running without Tags will be stopped
-
-
-Inspired by Masataka Marukawa code
-
-	
-		https://github.com/mmarukaw

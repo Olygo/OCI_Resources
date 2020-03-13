@@ -6,9 +6,3 @@
 - Connect to every profile in Oci Config file
 - To every region or not
 - To every compartment or not
-
-
-Inspired by Masataka Marukawa code
-
-	
-		https://github.com/mmarukaw
