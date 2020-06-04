@@ -4,7 +4,7 @@
 # pandas can be installed via pip from PyPI using:
 # pip install pandas --user
 
-"
+
 import os
 import glob
 import pandas as pd
