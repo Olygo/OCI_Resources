@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Installing from PyPI
-# pandas can be installed via pip from PyPI using:
+# Use merge.py in order to merge cost or report files into a single file
+
+# Pre requisite : Pandas library
+# Pandas can be installed via pip from PyPI using:
 # pip install pandas --user
 
 
