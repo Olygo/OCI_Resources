@@ -36,11 +36,16 @@ target_region_names = ['eu-frankfurt-1','eu-zurich-1','uk-london-1']
 # TRUE if you want to use Tags, otherwise FALSE
 # Tagged instances you don't want to stop
 
-Use_Tag = 'TRUE'
+use_tag = 'TRUE'
 
-# In this example if Use_Tag = TRUE
+tag_namespace = 'CLOUD-STOP'
+tag_key = 'STOP'
+tag_value = 'FALSE'
+
+
+# In this example if use_tag = TRUE
 # The script will NOT stop instance using the following values:
-# Tag_Namespace : CLOUD-STOP
+# tag_namespace : CLOUD-STOP
 # Tag_Key : STOP
 # Tag Value : FALSE
 # Instances running with Value=FALSE will not be stopped
@@ -91,7 +96,7 @@ for region in target_regions:
 
     config["region"] = region.region_name
 
-    stop_compute_instances(config, signer, target_compartments, Use_Tag)
-    stop_database_systems(config, signer, target_compartments, Use_Tag)
-    stop_autonomous_dbs(config, signer, target_compartments, Use_Tag)
+    stop_compute_instances(config, signer, target_compartments, use_tag, tag_value, tag_key, tag_namespace)
+    stop_database_systems(config, signer, target_compartments, use_tag, tag_value, tag_key, tag_namespace)
+    stop_autonomous_dbs(config, signer, target_compartments, use_tag, tag_value, tag_key, tag_namespace)
 

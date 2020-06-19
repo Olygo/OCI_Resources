@@ -5,7 +5,7 @@ resource_name = 'database systems'
 red = lambda text: '\033[0;31m' + text + '\033[0m'
 green = lambda text: '\033[0;32m' + text + '\033[0m'
 
-def stop_database_systems(config, signer, compartments, Use_Tag):
+def stop_database_systems(config, signer, compartments, use_tag, tag_value, tag_key, tag_namespace):
     target_resources = []
 
     print("Listing all {}... (* is marked for stop)".format(resource_name))
@@ -15,11 +15,11 @@ def stop_database_systems(config, signer, compartments, Use_Tag):
         for db_system in db_systems:
             go = 1
             if (db_system.lifecycle_state == 'AVAILABLE'):
-                if Use_Tag == 'TRUE':
+                if use_tag == 'TRUE':
                     print ("\n===========================[ Tags Control Enabled ]=============================")
 
-                    if ('CLOUD-STOP' in db_system.defined_tags) and ('STOP' in db_system.defined_tags['CLOUD-STOP']): 
-                        if (db_system.defined_tags['CLOUD-STOP']['STOP'].upper() == 'FALSE'):
+                    if (tag_namespace in db_system.defined_tags) and (tag_key in db_system.defined_tags[tag_namespace]): 
+                        if (db_system.defined_tags[tag_namespace][tag_key].upper() == tag_value):
                             go = 0
 
             print("      {} ({}) in {}".format(db_system.display_name, db_system.lifecycle_state, compartment.name))
@@ -36,7 +36,7 @@ def stop_database_systems(config, signer, compartments, Use_Tag):
     print('\nStopping * marked {}...'.format(resource_name))
     for resource in target_resources:
         try:
-            response = _db_node_action(config, signer, resource.id, 'STOP')
+            response = _db_node_action(config, signer, resource.id, tag_key)
 
         except oci.exceptions.ServiceError as e:
             print("---------> error. status: {}".format(e))

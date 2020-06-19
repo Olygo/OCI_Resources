@@ -5,7 +5,7 @@ resource_name = 'autonomous databases'
 red = lambda text: '\033[0;31m' + text + '\033[0m'
 green = lambda text: '\033[0;32m' + text + '\033[0m'
 
-def stop_autonomous_dbs(config, signer, compartments, Use_Tag):
+def stop_autonomous_dbs(config, signer, compartments, use_tag, tag_value, tag_key, tag_namespace):
     target_resources = []
 
     print("\nListing all {}... (* is marked for stop)".format(resource_name))
@@ -15,7 +15,7 @@ def stop_autonomous_dbs(config, signer, compartments, Use_Tag):
         for resource in resources:
             go = 1
             if (resource.lifecycle_state == 'AVAILABLE'):
-                if Use_Tag == 'TRUE':
+                if use_tag == 'TRUE':
                     print ("\n===========================[ Tags Control Enabled ]=============================")
 
                     if ('CLOUD-STOP' in resource.defined_tags) and ('STOP' in resource.defined_tags['CLOUD-STOP']): 
