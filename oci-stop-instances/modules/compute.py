@@ -18,8 +18,8 @@ def stop_compute_instances(config, signer, compartments, use_tag, tag_value, tag
                 if use_tag == 'TRUE':
                     print ("\n===========================[ Tags Control Enabled ]=============================")
 
-                    if ('CLOUD-STOP' in resource.defined_tags) and ('STOP' in resource.defined_tags['CLOUD-STOP']): 
-                        if (resource.defined_tags['CLOUD-STOP']['STOP'].upper() == 'FALSE'):
+                    if (tag_namespace in resource.defined_tags) and (tag_key in resource.defined_tags[tag_namespace]): 
+                        if (resource.defined_tags[tag_namespace][tag_key].upper() == tag_value):
                             go = 0
                     else:
                         go = 1
@@ -34,7 +34,7 @@ def stop_compute_instances(config, signer, compartments, use_tag, tag_value, tag
     print('\nStopping * marked {}...'.format(resource_name))
     for resource in target_resources:
         try:
-            response = _resource_action(config, signer, resource.id, 'STOP')
+            response = _resource_action(config, signer, resource.id, tag_key)
         except oci.exceptions.ServiceError as e:
             print("---------> error. status: {}".format(e))
             pass

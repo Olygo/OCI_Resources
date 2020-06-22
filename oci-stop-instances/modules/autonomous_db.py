@@ -18,8 +18,8 @@ def stop_autonomous_dbs(config, signer, compartments, use_tag, tag_value, tag_ke
                 if use_tag == 'TRUE':
                     print ("\n===========================[ Tags Control Enabled ]=============================")
 
-                    if ('CLOUD-STOP' in resource.defined_tags) and ('STOP' in resource.defined_tags['CLOUD-STOP']): 
-                        if (resource.defined_tags['CLOUD-STOP']['STOP'].upper() == 'FALSE'):
+                    if (tag_namespace in resource.defined_tags) and (tag_key in resource.defined_tags[tag_namespace]): 
+                        if (resource.defined_tags[tag_namespace][tag_key].upper() == tag_value):
                             go = 0
 
             if (go == 1):
