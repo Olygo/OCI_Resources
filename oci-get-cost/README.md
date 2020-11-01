@@ -13,7 +13,7 @@ Get OCI consumption from a specific date (using 1 argument), until current day
 	
 	python3 ./oci-get-cost.py 2020-09-01
 
-This script records consumption logs into a bucket and/or sends it through email using SendGrid API
+This script records consumption logs into a bucket and/or sends it through email using OCI Mail Delivery or SendGrid API
 
 It creates both compartment & bucket if they don't exist
 
