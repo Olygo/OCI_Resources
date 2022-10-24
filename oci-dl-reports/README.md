@@ -4,11 +4,11 @@
 ## @author: Florian Bonneville, 
     Oct. 24th 2022
     version: 1.0
-    Bug report, questions, comments: _olygo.git@gmail.com_
+    Bug report, questions, comments: (mailto:olygo.git@gmail.com?subject=[GitHub oci-dl-reports] Source Han Sans)
 
 ***DISCLAIMER – This is not an official Oracle application,  It does not supported by Oracle Support.***
 
-*This script downloads & extracts your OCI Cost Reports into your own bucket for the current month (default) or for a specified month & year (arguments).*
+This script downloads & extracts your OCI Cost Reports into your own bucket for the current month (default) or for a specified month & year (arguments).
 
 ##  optional arguments:
 
