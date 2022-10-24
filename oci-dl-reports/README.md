@@ -4,7 +4,7 @@
 ## @author: Florian Bonneville, 
     Oct. 24th 2022
     version: 1.0
-    Bug report, questions, comments: (mailto:olygo.git@gmail.com?subject=[GitHub oci-dl-reports] Source Han Sans)
+    Bug report, questions, comments: olygo.git@gmail.com
 
 ***DISCLAIMER – This is not an official Oracle application,  It does not supported by Oracle Support.***
 
