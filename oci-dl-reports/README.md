@@ -3,12 +3,12 @@
 
 ## @author: Florian Bonneville, 
     Oct. 24th 2022
+    version: 1.0
+    Bug report, questions, comments: _olygo.git@gmail.com_
 
- Supports Python 3
+***DISCLAIMER – This is not an official Oracle application,  It does not supported by Oracle Support.***
 
-####DISCLAIMER – This is not an official Oracle application,  It does not supported by Oracle Support.
-
-*This script download & extract your OCI Cost reports into your own bucket for the current month (default) or for a specified month & year (arguments).*
+*This script downloads & extracts your OCI Cost Reports into your own bucket for the current month (default) or for a specified month & year (arguments).*
 
 ##  optional arguments:
 
@@ -16,7 +16,7 @@
 	-auth CS                >   authenticate through OCI Cloud Shell
 	-auth CF                >   authenticate through OCI Config file
 	-cf /path_to_file       >   specify config file location if not in default location
-	-p profile_nmae         >   specify which profil to use in the config file if many exists
+	-p profile_name         >   specify which profile to use in the config file if many exists
 	-dest local             >   download into a local folder only, default push to OCI
 	-init True              >   download all reports from the last 6 months
 	-m mm                   >   download reports for month mm (01, 02,...)
