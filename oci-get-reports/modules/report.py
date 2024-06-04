@@ -1,105 +1,112 @@
+# coding: utf-8
+
 import os
-import oci
-import datetime
 import gzip
 import glob
+import oci
 import pandas as pd
 from oci.signer import Signer
-import time
+from modules.storage import *
+from pathlib import Path
 
+# set colors
 yellow = lambda text: '\033[0;33m' + text + '\033[0m'
 red = lambda text: '\033[0;31m' + text + '\033[0m'
 green = lambda text: '\033[0;32m' + text + '\033[0m'
 
-def get_reports(config, tenancy_id, profile, destination_path, month, use_history, prefix_file):
+def get_reports(config, signer, working_folder, tmp_folder, month, year, prefix_file, use_history, start_after, oci_tname):
 
-  reporting_namespace = 'bling'
-  report_folder = destination_path + profile
-
-  # Make a directory to receive reports
+  # Check if report folder exists
+  report_folder = working_folder + oci_tname
   if not os.path.exists(report_folder):
-      os.mkdir(report_folder)
+    os.mkdir(report_folder) 
+  
+  print (green("\n====> Collecting reports..."))
 
-  print (green("\n[ Collecting reports...]"))
-  print()
+# collect oci reports
+  reporting_namespace = 'bling'
   reporting_bucket = config['tenancy']
-  object_storage = oci.object_storage.ObjectStorageClient(config)
-  report_bucket_objects = object_storage.list_objects(reporting_namespace, reporting_bucket, prefix=prefix_file, fields=['timeCreated'])
+  prefix_file = prefix_file
+  object_storage = oci.object_storage.ObjectStorageClient(config=config, signer=signer)
 
-  for o in report_bucket_objects.data.objects:   
+# last_file_history allows to start script after the last file already processed. 
+  report_bucket_objects = oci.pagination.list_call_get_all_results(object_storage.list_objects,reporting_namespace,reporting_bucket,prefix=prefix_file ,fields='name,size,timeCreated')
+
+  # jump to tmp_folder 
+  os.chdir(tmp_folder)
+
+  for o in report_bucket_objects.data.objects:
+    print(f"-- {o.name} ===> {o.time_created}")
     object_details = object_storage.get_object(reporting_namespace, reporting_bucket, o.name)
     filename = o.name.rsplit('/', 1)[-1]
-
     time_created = (o.time_created)
     month_created = time_created.strftime("%m") # get month, 2 digits
     year_created = time_created.strftime("%Y") # get year, 4 digits
-      
-    if month_created == month:
+    last_file_id = o.name 
 
-      print(f"----> Time period: {month_created} _ {year_created}")
-      print(f"Downloading {o.name}")
-      with open(report_folder + '/' + filename, 'wb') as f:
-          for chunk in object_details.data.raw.stream(1024 * 1024, decode_content=False):
-              f.write(chunk)
+    if year_created == year:
+      if month_created == month:
+        print(f"----> Time period: {month_created} _ {year_created}")
+        print(f"Processing: {o.name}")
 
-      print(f"Extracting {o.name}")  
-      input = gzip.GzipFile(report_folder + '/' + filename, 'rb')
-      s = input.read()
-      input.close()
-      output = open(report_folder + '/' + filename[:-3], 'wb')    # [:-3]  => Remove .gz
-      output.write(s)
-      output.close()
-      print(f"Deleting {o.name}")
-      print()
-      os.remove(report_folder + '/' + filename)
+        # download .gz archive
+        with open(tmp_folder + filename, 'wb') as f:
+            for chunk in object_details.data.raw.stream(1024 * 1024, decode_content=False):
+                f.write(chunk)
 
-  f.close()
+        # extract .gz archive
+        input = gzip.GzipFile(tmp_folder + filename, 'rb')
+        s = input.read()
+        input.close()
+        output = open(tmp_folder + filename[:-3], 'wb')    # [:-3]  => Remove .gz
+        output.write(s)
+        output.close()
 
-  Monthly_csv = month + '_' + year_created + '_' + profile + '.csv'
-  your_report = str(report_folder) + '/' + str(Monthly_csv)
-  print(f"your_report is {your_report}")
-  if os.path.exists(your_report):
-    print("EXISTING REPORT FOUND...")
-    os.remove(your_report)
-    print("WAIT")
-    time.sleep(15)
+        # delete .gz archive
+        os.remove(tmp_folder + filename)
+        f.close()
 
-  print(f"[ CSV files in {report_folder} ]")
-  print()
+  # set report name
+  monthly_csv = oci_tname + '_' + month + '_' + year + '.csv'
 
-  #use glob pattern matching -> extension = 'csv'
-  #save result in list -> all_filenames
+  # use glob pattern matching -> extension = 'csv', save result in csv_list list
+  # count csv files extracted
+  csv_counter = len(glob.glob1(tmp_folder,"*.csv"))
 
-  os.chdir(report_folder)
-
-  #Count files csv
-  csv_counter = len(glob.glob1(report_folder,"*.csv"))
-
-  if csv_counter > 1:
-    print (green("\n[ Merging daily reports...]"))
-    print()
-    print(f"local csv files to merge: {csv_counter}")
+  if csv_counter > 0:
+    print (green(f"\n====> Merging {csv_counter} daily reports..."))
     extension = 'csv'
-    all_filenames = [i for i in glob.glob('*.{}'.format(extension))]
-
-    for filename in all_filenames:
-        if profile in filename:
-          all_filenames.remove(filename)
-
-    for filename in all_filenames:
-        Monthly_csv = month + '_' + year_created + '_' + profile + '.csv'
-        Monthly = pd.concat([pd.read_csv(f, low_memory=False) for f in all_filenames ])
-        Monthly.to_csv( Monthly_csv, index=False, encoding='utf-8-sig')
+    csv_list = [i for i in glob.glob('*.{}'.format(extension))]
     
-    print (green("\n[ Removing daily reports...]"))
-    print()
-    csv_in_directory = os.listdir(report_folder)
-    filtered_files = [file for file in csv_in_directory if file.endswith(".csv")]
+    # merge into a single csv
+    monthly = pd.concat([pd.read_csv(f, low_memory=False) for f in csv_list])
+    monthly.to_csv( monthly_csv, index=False, encoding='utf-8-sig')
     
-    for filename in filtered_files:
-      print()
-      if profile not in filename:
-        path_to_csv = os.path.join(report_folder, filename)
-        os.remove(path_to_csv)
+    # move final report out of tmp
+    monthly_report = str(report_folder) + '/' + str(monthly_csv)
+    Path(tmp_folder + monthly_csv).rename(monthly_report)
+    
+    # cleanup tmp_folder
+    print (green("\n====> Removing daily reports..."))
+    tmp_list = os.listdir(tmp_folder)
+
+    for filename in tmp_list:
+      path_to_csv = os.path.join(tmp_folder, filename)
+      os.remove(path_to_csv)
+
+    # record last processed file name for next run.
+    last_file_path = os.path.join(report_folder, 'last_file_history')
+    with open(last_file_path,'w') as f:
+      f.write(last_file_id)  
+    f.close()
+
+    # get report & size in GB
+    print(f"Report location: {monthly_report}")
+    report_size = os.path.getsize(monthly_report) / (1024*1024*1024)
+    print(f"Report size: {report_size:.2f} GB")
+
   else:
-    print("no files to merge")
+    print("Nothing to process")
+  
+  return monthly_report
+
