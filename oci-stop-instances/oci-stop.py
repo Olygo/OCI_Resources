@@ -9,6 +9,10 @@ from modules.autonomous_db import *
 from modules.db_system import *
 
 ########## Configuration ####################
+# if you want to authenticate through OCI CloudShell, set 'TRUE'
+use_cloudshell_auth = 'TRUE'
+tenancy_id = "ocid1.tenancy.oc1..aaaaaXXXXXXXXX"
+
 # Specify your config file
 configfile = '/home/opc/.oci/config'
 
@@ -19,7 +23,7 @@ profile = 'DEFAULT'
 use_instance_principal = 'FALSE'
 
 # Set top level compartment OCID. Tenancy OCID will be set if null.
-top_level_compartment_id = ''
+top_level_compartment_id = 'ocid1.compartment.oc1.. aaaaaXXXXXXXXX'
 
 # List compartment names to exclude
 excluded_compartments = ['ManagedCompartmentForPaaS']
@@ -28,7 +32,8 @@ excluded_compartments = ['ManagedCompartmentForPaaS']
 # excluded_compartments = []
 
 # List target regions. All regions will be counted if null.
-target_region_names = ['eu-frankfurt-1','eu-zurich-1','uk-london-1']
+#target_region_names = ['eu-frankfurt-1','eu-zurich-1','uk-london-1']
+target_region_names = ['eu-frankfurt-1']
 
 # if all regions must be checked, use :
 #target_region_names = []
@@ -54,13 +59,20 @@ tag_value = 'FALSE'
 
 #############################################
 
-# Default config file and profile
-config = oci.config.from_file(configfile, profile)
-tenancy_id = config['tenancy']
-
 if use_instance_principal == 'TRUE':
     signer = oci.auth.signers.InstancePrincipalsSecurityTokenSigner()
+
+if use_cloudshell_auth == 'TRUE':
+    config = {}
+    delegation_token = open('/etc/oci/delegation_token', 'r').read()
+    signer = oci.auth.signers.InstancePrincipalsDelegationTokenSigner(delegation_token=delegation_token)
+    identity = oci.identity.IdentityClient(config={}, signer=signer)
+    print("Logged in as: { CloudShell Auth }")
+
 else:
+    # Default config file and profile
+    config = oci.config.from_file(configfile, profile)
+    tenancy_id = config['tenancy']
     signer = Signer(
         tenancy = config['tenancy'],
         user = config['user'],
@@ -71,7 +83,7 @@ else:
 
 
 print ("\n===========================[ Login check ]=============================")
-login(config, signer)
+login(config, signer,use_cloudshell_auth)
 
 print ("\n==========================[ Target regions ]===========================")
 all_regions = get_region_subscription_list(config, signer, tenancy_id)

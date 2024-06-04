@@ -62,7 +62,7 @@ def updload_file(config, signer, target_bucket, file2upload, tenancy_id, day_cre
     storage = oci.object_storage.ObjectStorageClient(config=config, signer=signer)
     namespace = storage.get_namespace(compartment_id=tenancy_id).data
 
-    if str.upper(tree_reports) == 'TRUE':
+    if tree_reports:
         tag =  year_created + "/" + month_created + "/" + day_created + "/"
     else:
         tag = ''
@@ -91,12 +91,12 @@ def updload_file(config, signer, target_bucket, file2upload, tenancy_id, day_cre
 
 def move_file(file2upload, day_created, month_created, year_created, tree_reports, working_folder, tmp_folder, file):
  
-    if str.upper(tree_reports) == 'TRUE':
+    if tree_reports:
         tag =  year_created + "/" + month_created + "/" + day_created + "/"
     else:
         tag = ''
 
-    if str.upper(tree_reports) == 'TRUE':
+    if tree_reports:
         # move report to working folder using tree
         year_folder = os.path.join(working_folder, year_created)
         check_folder(year_folder)

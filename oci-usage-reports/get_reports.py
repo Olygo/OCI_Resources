@@ -14,7 +14,7 @@ import os
 import oci
 import gzip
 
-usage_report_namespace = 'bling'
+usage_report_namespace = 'bling' # DO NOT EDIT NAMESPACE
 
 # Update these values
 destination_path = 'downloaded_reports'

@@ -7,7 +7,7 @@ def manage_compartment(config, signer, tenancy_id, my_compartment):
 
     identity = oci.identity.IdentityClient(config=config, signer=signer)
     
-    all_compt = identity.list_compartments(tenancy_id).data
+    all_compt = identity.list_compartments(tenancy_id, compartment_id_in_subtree=True).data
     my_compartment_id = ""
     for compartment in all_compt:
         if compartment.name == my_compartment:    

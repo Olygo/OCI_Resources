@@ -23,7 +23,7 @@ white = lambda text: '\033[0;37m' + text + '\033[0m'
 configfile = '/home/opc/.oci/config'
 
 # Set true if using instance principal signing
-use_instance_principal = 'FALSE'
+use_instance_principal = 'TRUE'
 
 # Set top level compartment OCID. Tenancy OCID will be set if null.
 #top_level_compartment_id = ''
@@ -35,10 +35,10 @@ excluded_compartments = ['ManagedCompartmentForPaaS']
 # excluded_compartments = []
 
 # List target regions. All regions will be counted if null.
-target_region_names = ['eu-frankfurt-1','eu-zurich-1','uk-london-1']
+#target_region_names = ['eu-frankfurt-1','eu-zurich-1','uk-london-1']
 
 # if all regions must be checked, use :
-#target_region_names = []
+target_region_names = []
 
 #############################################
 

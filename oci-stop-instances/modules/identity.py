@@ -1,9 +1,16 @@
 import oci
 
-def login(config, signer):
-    identity = oci.identity.IdentityClient(config, signer=signer)
-    user = identity.get_user(config['user']).data
-    print("Logged in as: {} @ {}".format(user.description, config['region']))
+def login(config, signer,use_cloudshell_auth):
+    if use_cloudshell_auth == 'TRUE':
+        config = {}
+        delegation_token = open('/etc/oci/delegation_token', 'r').read()
+        signer = oci.auth.signers.InstancePrincipalsDelegationTokenSigner(delegation_token=delegation_token)
+        identity = oci.identity.IdentityClient(config={}, signer=signer)
+        print("Logged in as: { CloudShell Auth }")
+    else:
+        identity = oci.identity.IdentityClient(config, signer=signer)
+        user = identity.get_user(config['user']).data
+        print("Logged in as: {} @ {}".format(user.description, config['region']))
 
 def get_compartment_list(config, signer, compartment_id):
     identity = oci.identity.IdentityClient(config, signer=signer)

@@ -1,15 +1,22 @@
 # coding: utf-8
 
 ##########################################################################
-# oci-dl-reports.py
+# name: OCI-GetReports.py
+# task: downloads & extracts your OCI Cost reports into your own bucket 
+# for the current month (default) or for a specified month & year (arguments)
 #
-# @author: Florian Bonneville, Oct. 24th 2022
-# version: 1.0
+# author: Florian Bonneville
+# version: 1.0 - Oct. 22th 2022
 #
-# DISCLAIMER – This is not an official Oracle application,  It does not supported by Oracle Support.
+# ***********************************************************************
+#
+# disclaimer: this is not an official Oracle application,  
+# it does not supported by Oracle Support
+##########################################################################
+
 ##########################################################################
 # Info:
-# this script downloads & extracts your OCI Cost reports into your own bucket for the current month (default) or for a specified month & year (arguments).
+# this script .
 #
 # optional arguments:
 #
@@ -88,18 +95,31 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-auth', default="IP", dest='auth_mode', help='select your authentication mode: IP : Use_Instance_Principal, CF : Use_Config_File , CS : Use_Cloud_Shell', required=False, type=str)
 parser.add_argument('-cf', default="~/.oci/config", dest='config_file', help='location of your OCI config file, default is ~/.oci/config', required=False, type=str)
 parser.add_argument('-p', default="DEFAULT", dest='profile', help='profile to use in your config file, default is "DEFAULT"', required=False, type=str)
+
 parser.add_argument('-m', default=0, dest='month', help='force a specific month to collect, format: 01 to 12', required=False)
 parser.add_argument('-y', default=0, dest='year', help='force a specific year to collect, format: 2018 to 2050', required=False)
-parser.add_argument('-hist', default="False", dest='use_history', help='start analysis from last downloaded file, this reduce script duration', required=False, type=str)
+
+#parser.add_argument('-hist', default="False", dest='use_history', help='start analysis from last downloaded file, this reduce script duration', required=False, type=str)
+parser.add_argument('-hist', action='store_true', default=False, dest='use_history', help='start analysis from last downloaded file, this reduce script duration')
+
 parser.add_argument('-f', default="", dest='start_after', help='start analysis after a specific file, format: reports/cost-csv/0001000000760749.csv.gz', required=False, type=str)
+
 parser.add_argument('-pr', default="reports/cost-csv", dest='prefix_file', help='download either cost or usage reports, format: reports/cost-csv or reports/usage-csv', required=False, type=str)
 parser.add_argument('-wf', default="default", dest='working_folder', help='reports folder location, default is ~/YOUR_TENANT_NAME_cost_reports/', required=False, type=str)
-parser.add_argument('-dest', default="OCI", dest='dest', help='reports location: Local or OCI bucket, format: OCI or Local', required=False, type=str)
+
+parser.add_argument('-oci', action='store_true', default=True, dest='oci', help='reports location: Local or OCI bucket, format: OCI or Local', required=False)
+
 parser.add_argument('-cp', default="Root", dest='target_comp', help='define the compartment name to store your bucket, default is your root compartment', required=False, type=str)
 parser.add_argument('-bn', default="default", dest='target_bucket', help='define the bucket name to store your reports, default : "reports_YOUR_TENANT_NAME', required=False, type=str)
-parser.add_argument('-init', default="False", dest='init_reports', help='download 6 months report history, format: True or False ', required=False, type=str)
-parser.add_argument('-tag', default="True", dest='tag_reports', help='add the date Prefix "YYYYMM" to each report, format: True or False', required=False, type=str)
-parser.add_argument('-tree', default="True", dest='tree_reports', help='organize reports in tree: /YEAR/MONTH/DAY/xxxxreport.csv, format: True or False', required=False, type=str)
+
+#parser.add_argument('-init', default="False", dest='init_reports', help='download 6 months report history, format: True or False ', required=False, type=str)
+parser.add_argument('-init', action='store_true', default=False, dest='init_reports', help='download 6 months report history, format: True or False ')
+
+#parser.add_argument('-tag', default="True", dest='tag_reports', help='add the date Prefix "YYYYMM" to each report, format: True or False', required=False, type=str)
+parser.add_argument('-tag', action='store_true', default=True, dest='tag_reports', help='add the date Prefix "YYYYMM" to each report, format: True or False')
+
+#parser.add_argument('-tree', default="True", dest='tree_reports', help='organize reports in tree: /YEAR/MONTH/DAY/xxxxreport.csv, format: True or False', required=False, type=str)
+parser.add_argument('-tree', action='store_true', default=True, dest='tree_reports', help='organize reports in tree: /YEAR/MONTH/DAY/xxxxreport.csv, format: True or False')
 
 # get arguments
 # try:
@@ -110,21 +130,6 @@ parser.add_argument('-tree', default="True", dest='tree_reports', help='organize
 #     raise SystemExit
 
 cmd = parser.parse_args()
-auth_mode = cmd.auth_mode
-config_file = cmd.config_file
-config_profile = cmd.profile
-month = cmd.month
-year = cmd.year
-use_history = cmd.use_history
-start_after = cmd.start_after
-prefix_file = cmd.prefix_file
-working_folder = cmd.working_folder
-dest = cmd.dest
-target_comp = cmd.target_comp
-target_bucket = cmd.target_bucket
-init_reports = cmd.init_reports
-tag_reports = cmd.tag_reports
-tree_reports = cmd.tree_reports
 
 # set global var
 yellow = lambda text: '\033[0;33m' + text + '\033[0m'
@@ -135,18 +140,18 @@ now = datetime.datetime.now()
 #started = now.strftime("%d/%m/%Y %H:%M:%S")
 
 # check month & year if specified:
-if month != 0:
-  if month in months_list:
-    month = month
-    use_history = 'False'
+if cmd.month != 0:
+  if cmd.month in months_list:
+    month = cmd.month
+    cmd.use_history = False
   else:
-    print(red(f"\nInvalid month: {month}, must be integer between: 01 => 12"))
+    print(red(f"\nInvalid month: {cmd.month}, must be integer between: 01 => 12"))
     raise SystemExit
   
-  if 2018 <= int((year)) <= 2050:
-    year = year
+  if 2018 <= int((cmd.year)) <= 2050:
+    year = cmd.year
   else:
-    print(red(f"\nInvalid year: {year}, must be integer between: 2018 => 2050"))
+    print(red(f"\nInvalid year: {cmd.year}, must be integer between: 2018 => 2050"))
     raise SystemExit
 
 # if no month specified, use current month & year
@@ -155,16 +160,16 @@ else:
     year = now.strftime("%Y")
 
 # call authentication: get signer
-config, signer = create_signer(auth_mode, config_file, config_profile)
+config, signer = create_signer(cmd.auth_mode, cmd.config_file, cmd.profile)
 tenancy_id = config["tenancy"]
 oci_tname = get_tenancy(tenancy_id, config, signer)
 print()
 
 # Set Working Folder 
-config_file = path_expander(config_file)        # expand path if tilde (~) used in path
-if working_folder == 'default':
+config_file = path_expander(cmd.config_file)        # expand path if tilde (~) used in path
+if cmd.working_folder == 'default':
   working_folder = '~/' + oci_tname + '_cost_reports/'
-working_folder = path_expander(working_folder)  # expand path if tilde (~) used in path
+working_folder = path_expander(cmd.working_folder)  # expand path if tilde (~) used in path
 tmp_folder = working_folder + ".tmp/"
 
 # Create folders if don't exist
@@ -176,36 +181,36 @@ for file in os.listdir(tmp_folder):
     os.remove(os.path.join(tmp_folder, file))
 
 # if OCI storage location
-if str.upper(dest) == "OCI":
+if cmd.oci:
   # check compartment
-  if target_comp == 'Root':
+  if cmd.target_comp == 'Root':
     target_comp_id = tenancy_id
   else:
-    target_comp_id = check_compartment(config, signer, tenancy_id, target_comp)
+    target_comp_id = check_compartment(config, signer, tenancy_id, cmd.target_comp)
 
   # check compartment & bucket
-  target_bucket = check_bucket(config, signer, target_comp_id, target_bucket, tenancy_id, oci_tname)
+  target_bucket = check_bucket(config, signer, target_comp_id, cmd.target_bucket, tenancy_id, oci_tname)
 
-if str.upper(init_reports) == 'TRUE':
-  print_conf (auth_mode,config_file,config_profile,month,year,use_history,start_after,prefix_file,working_folder,dest,target_comp,target_bucket,init_reports,tag_reports,tree_reports)
+if cmd.init_reports:
+  print_conf (cmd.auth_mode,config_file,cmd.profile,month,year,cmd.use_history,cmd.start_after,cmd.prefix_file,working_folder,cmd.oci,cmd.target_comp,target_bucket,cmd.init_reports,cmd.tag_reports,cmd.tree_reports)
 
   # download 6 months reports history
-  get_allreports(config, signer, tmp_folder, prefix_file, target_bucket, working_folder, tenancy_id, tag_reports, tree_reports, dest)
+  get_allreports(config, signer, tmp_folder, cmd.prefix_file, target_bucket, working_folder, tenancy_id, cmd.tag_reports, cmd.tree_reports, cmd.oci)
 
 else:
-  print_conf (auth_mode,config_file,config_profile,month,year,use_history,start_after,prefix_file,working_folder,dest,target_comp,target_bucket,init_reports,tag_reports,tree_reports)
+  print_conf (cmd.auth_mode,config_file,cmd.profile,month,year,cmd.use_history,cmd.start_after,cmd.prefix_file,working_folder,cmd.oci,cmd.target_comp,target_bucket,cmd.init_reports,cmd.tag_reports,cmd.tree_reports)
 
   # download user-defined reports history
-  get_reports(config, signer, working_folder, tmp_folder, month, year, prefix_file, use_history, start_after, target_bucket, tenancy_id, tag_reports, tree_reports, dest)
+  get_reports(config, signer, working_folder, tmp_folder, month, year, cmd.prefix_file, cmd.use_history, cmd.start_after, target_bucket, tenancy_id, cmd.tag_reports, cmd.tree_reports, cmd.oci)
 
 # print script statistics
-if str.upper(dest) == "OCI":
+if cmd.oci:
   bucket_info = get_bucket_info(config, signer, target_bucket, tenancy_id)
   print(green(f"\nBucket size: {bucket_info[1]:.2f} GB"))
   print(green(f"Bucket files #: {bucket_info[0]}"))
 
 end = datetime.datetime.now()
-ended = end.strftime("%d/%m/%Y %H:%M:%S")
+#ended = end.strftime("%d/%m/%Y %H:%M:%S")
 duration = end-now
 print(green(f"Execution time: {duration}"))
 print()

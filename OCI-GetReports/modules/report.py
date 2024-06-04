@@ -11,7 +11,7 @@ yellow = lambda text: '\033[0;33m' + text + '\033[0m'
 red = lambda text: '\033[0;31m' + text + '\033[0m'
 green = lambda text: '\033[0;32m' + text + '\033[0m'
 
-def get_reports(config, signer, working_folder, tmp_folder, month, year, prefix_file, use_history, start_after, target_bucket, tenancy_id, tag_reports, tree_reports, dest):
+def get_reports(config, signer, working_folder, tmp_folder, month, year, prefix_file, use_history, start_after, target_bucket, tenancy_id, tag_reports, tree_reports, cmd_oci):
   
   print(yellow(f"  -Collected reports: M:{month} Y:{year}"))
   time.sleep(10) # display info for 10sec.
@@ -21,7 +21,7 @@ def get_reports(config, signer, working_folder, tmp_folder, month, year, prefix_
     last_file_id = start_after
     print(f'starting analysis after file: {last_file_id}')
   else:
-    if str.upper(use_history) == 'FALSE':
+    if use_history == False:
       last_file_id = ''
     else:
       try:
@@ -85,7 +85,7 @@ def get_reports(config, signer, working_folder, tmp_folder, month, year, prefix_
 
         for file in os.listdir(tmp_folder):
           if file.endswith(".csv"):
-            if str.upper(tag_reports) == 'TRUE':
+            if tag_reports:
               tag=str(o.time_created)[0:10] #extract date from file date properties
               newfile = tag + '_' + file
               os.rename (file, newfile)
@@ -94,7 +94,7 @@ def get_reports(config, signer, working_folder, tmp_folder, month, year, prefix_
             #print(os.path.join(tmp_folder, file))
             file2upload = os.path.join(tmp_folder, file)
 
-        if dest == 'OCI':
+        if cmd_oci:
           # call upload function
           updload_file(config, signer, target_bucket, file2upload, tenancy_id, day_created, month_created, year_created, tree_reports, tmp_folder)
 

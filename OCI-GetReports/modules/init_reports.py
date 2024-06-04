@@ -11,7 +11,7 @@ yellow = lambda text: '\033[0;33m' + text + '\033[0m'
 red = lambda text: '\033[0;31m' + text + '\033[0m'
 green = lambda text: '\033[0;32m' + text + '\033[0m'
 
-def get_allreports(config, signer, tmp_folder, prefix_file, target_bucket, working_folder, tenancy_id, tag_reports, tree_reports, dest):
+def get_allreports(config, signer, tmp_folder, prefix_file, target_bucket, working_folder, tenancy_id, tag_reports, tree_reports, cmd_oci):
   
   print (green("\n====> Collecting all reports since the last 6 months..."))
   time.sleep(10) # display info for 10sec.
@@ -54,7 +54,7 @@ def get_allreports(config, signer, tmp_folder, prefix_file, target_bucket, worki
 
     for file in os.listdir(tmp_folder):
       if file.endswith(".csv"):
-            if str.upper(tag_reports) == 'TRUE':
+            if tag_reports:
               tag=str(o.time_created)[0:10] #extract date from file date properties
               newfile = tag + '_' + file
               os.rename (file, newfile)
@@ -62,7 +62,7 @@ def get_allreports(config, signer, tmp_folder, prefix_file, target_bucket, worki
 
             print(os.path.join(tmp_folder, file))
             file2upload = os.path.join(tmp_folder, file)
-    if dest == "OCI":
+    if cmd_oci:
       # call upload function
       updload_file(config, signer, target_bucket, file2upload, tenancy_id, day_created, month_created, year_created, tree_reports, tmp_folder)
 

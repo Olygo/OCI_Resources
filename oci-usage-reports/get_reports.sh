@@ -32,10 +32,10 @@
 # Start Config Section
 #####################
 
-    namespace="bling"
-    bucketname="ocid1.tenancy.oc1..aaaaaaaaggjbti5jkqshdk56qshdjxqsdkjlqk43g4fg3ha"
-    UserId="ocid1.user.oc1..aaaaaaaa2lskdy27rjjdfghj345nhymfg45l42lkqoe3bysflsyuau"
-    keyFingerprint="05:1e:74:98:33:92:56:ef:eb:5d:a0:67:9e:11:7b:23"
+    namespace="bling" # DO NOT EDIT NAMESPACE
+    bucketname="ocid1.tenancy.oc1..aaaaaaaaggjbti5dslmdmsldk56qshdjxqjlqk43g4fg3ha"
+    UserId="ocid1.user.oc1..aaaaaaaa2lfslkfmlskdy2hj345nhymfg45l42lkqoe3bysflsyuau"
+    keyFingerprint="05:1e:74:98:33:92:36:df:af:1f:b5:56:5f:31:4b:11"
     privateKeyPath="$HOME/.oci/OCI_API_KEY.pem"
     homeregion="eu-frankfurt-1"
     reportfolder="$HOME/MyReports/"

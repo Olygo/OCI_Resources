@@ -25,9 +25,10 @@ def stop_compute_instances(config, signer, compartments, use_tag, tag_value, tag
                         go = 1
 
             if (go == 1):
-                print(red("    * {} ({}) in {}".format(resource.display_name, resource.lifecycle_state, compartment.name)))
-               
-                target_resources.append(resource)
+                if (resource.lifecycle_state != 'TERMINATED'):
+                    print(red("    * {} ({}) in {}".format(resource.display_name, resource.lifecycle_state, compartment.name)))
+                
+                    target_resources.append(resource)
             else:
                 print(green("      {} ({}) in {}".format(resource.display_name, resource.lifecycle_state, compartment.name)))
 

@@ -28,26 +28,29 @@ white = lambda text: '\033[0;37m' + text + '\033[0m'
 
 # --- Authentication parameters if authentication with Config file --- #
 profile = "DEFAULT"					# specify your config file profile name and path
-configfile = '/home/opc/.oci/config'
+configfile = '/home/opc/' #.oci/config
 
 # --- Authentication parameters if authentication with Instance Principal --- #
 use_instance_principal = 'FALSE' 	# set 'TRUE' to use instance principal authentication instead of config file
-tenancy_id_instance_principal = "ocid1.tenancy.oc1..aaaaaa..."		# specify your tenant OCID 
+tenancy_id = "ocid1.tenancy.oc1..aaaaaaaaXXXX"		# specify your tenant OCID 
+
+# --- Authentication parameters if authentication with OCI CloudShell --- #
+use_cloudshell = 'TRUE'
 
 # --- Script parameters --- #
-compartment_ocid = 'ocid1.compartment.oc1..aaaaaaaa....' # specify the OCID of the compartment you want to analyse
-start_time = datetime.datetime(2020, 3, 12, 23, 00)
-end_time = datetime.datetime(2020, 3, 13, 00, 59)
+compartment_ocid = 'ocid1.compartment.oc1..aaaaaaaXXX' # specify the OCID of the compartment you want to analyse
+start_time = datetime.datetime(2021, 11, 25, 00, 00)
+end_time = datetime.datetime(2021, 11, 26, 23, 59)
 
 ###########  -End Config- ###########
 
 Events = [
-        "CreateAutonomousDatabase",
-        "DeleteAutonomousDatabase",
-        "StartAutonomousDatabase", 
-        "StopAutonomousDatabase",
-        "LaunchDbSystem",
-        "TerminateDbSystem",
+#        "CreateAutonomousDatabase",
+#        "DeleteAutonomousDatabase",
+#        "StartAutonomousDatabase", 
+#        "StopAutonomousDatabase",
+#        "LaunchDbSystem",
+#        "TerminateDbSystem",
         "LaunchInstance", 
         "InstanceAction",
         "TerminateInstance"
@@ -62,7 +65,19 @@ configfile = os.path.expanduser(configfile) # In case tilde (~) character is use
 if use_instance_principal == 'TRUE':
     signer = oci.auth.signers.InstancePrincipalsSecurityTokenSigner()
     config = {}
-    tenancy_id = tenancy_id_instance_principal
+    tenancy_id = tenancy_id
+
+if use_cloudshell == 'TRUE':
+    auth_mode = 'cloud_shell'
+    # get the cloud shell delegated authentication token
+    delegation_token = open('/etc/oci/delegation_token', 'r').read()
+    print("delegation_token")
+    print(delegation_token)
+    print()
+    print()
+    # create the api request signer
+    signer = oci.auth.signers.InstancePrincipalsDelegationTokenSigner(delegation_token=delegation_token)
+    config = {}
     
 else:
     config = oci.config.from_file(configfile, profile)
@@ -81,6 +96,7 @@ Auth = {}
 Auth.update( {'Config' : config} )
 Auth.update( {'Signer' : signer} )
 Auth.update( {'Use_instance_principal' : use_instance_principal} )
+Auth.update( {'Use_cloudshell' : use_cloudshell} )
 Auth.update( {'Tenancy_id' : tenancy_id} )
 Auth.update( {'Compartment_ocid' : compartment_ocid} )
 Auth.update( {'Start_time' : start_time} )
@@ -91,6 +107,8 @@ login(Auth)
 print()
 
 if use_instance_principal == 'TRUE':
+    audit = oci.audit.audit_client.AuditClient(config={}, signer=Auth["Signer"])
+if use_cloudshell == 'TRUE':
     audit = oci.audit.audit_client.AuditClient(config={}, signer=Auth["Signer"])
 else:
     audit = oci.audit.audit_client.AuditClient(config=Auth["Config"])
